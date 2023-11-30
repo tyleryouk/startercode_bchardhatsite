@@ -6,7 +6,7 @@
   const hre = require("hardhat");
 
   const tokens = (nToken) => {
-    return ethers.utils.parsedUnits(nToken.toString(), "ether");
+    return ethers.utils.parseUnits(nToken.toString(), "ether");
   }
 
   async function main() {
@@ -20,7 +20,7 @@
     const theBlockchainCoders = await TheBlockchainCoders.deploy(_initialSupply);
 
     await theBlockchainCoders.deployed();
-    console.log('TheBlockchainCoders: ${theBlockchainCoders.address}');
+    console.log(`TheBlockchainCoders: ${theBlockchainCoders.address}`);
 
     //TOKEN SALE CONTRACT
     const _tokenPrice = tokens(1);
@@ -32,7 +32,7 @@
     );
 
     await tokenSale.deployed();
-    console.log('TokenSale: ${tokenSale.address}')
+    console.log(`TokenSale: ${tokenSale.address}`);
   }
 
   main().catch((error) => {

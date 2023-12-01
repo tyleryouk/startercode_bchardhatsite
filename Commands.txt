@@ -1,0 +1,7 @@
+Commands:
+
+run local blockchain: npx hardhat node
+
+run local host:
+npx hardhat run --network localhost scripts/deploy.js
+npm run dev

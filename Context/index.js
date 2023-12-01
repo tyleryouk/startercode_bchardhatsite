@@ -75,6 +75,14 @@ export const StateContextProvider = ({children})=> {
                 );
             }
 
+            const currentHolder = {
+                tokenId: getTokenHolderData[0].toNumber(),
+                from: getTokenHolderdata[1],
+                to: getTokenHolderdata[1],
+                totalToken: getTokenHolderdata[1],
+                from: getTokenHolderdata[1]
+            }
+
         } catch (error) {
             console.log(error);
         }

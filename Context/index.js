@@ -12,8 +12,8 @@ import {
 
 const StateContext = createContext();
 
-export const StateContextProvider = ({children})=> {
-    const TOKEN_ICO = "TOKEN SELL DAPP";
+export const StateContextProvider = ({ children })=> {
+    const TOKEN_ICO = "TOKEN SALE DAPP";
 
     // STATE VARIABLES
     const [address, setAddress] = useState("");
@@ -28,16 +28,18 @@ export const StateContextProvider = ({children})=> {
         try {
             //GET USER ACCOUNT
             const account = await CheckIfWalletConnected();
-            //GET USER BALANCe
+            //GET USER BALANCE
             const balance = await getBalance();
             setBalance(ethers.utils.formatEther(balance.toString()));
             setAddress(account);
-
+            
             //TOKEN CONTRACT
             const TOKEN_CONTRACT = await connectingTOKENCONTRACT();
+
+            //ERROR WITH balanceOf(account)
             let tokenBalance;
             if(account){
-                tokenBalance = await TOKEN_CONTRACT.balanceOf(account)
+                tokenBalance = await TOKEN_CONTRACT.balanceOf(account);
             } else {
                 tokenBalance = 0;
             }
@@ -61,9 +63,9 @@ export const StateContextProvider = ({children})=> {
                 tokenBalance: ethers.utils.formatEther(tokenBalance.toString()),
                 tokenHolders: tokenHolders.toNumber(),
             };
-
             setNativeToken(nativeToken);
-
+            console.log(nativeToken);
+            /*
             //GETTING TOKEN HOLDERS
             const getTokenHolder = await TOKEN_CONTRACT.getTokenHolder();
             setTokenHolders(getTokenHolder);
@@ -73,27 +75,95 @@ export const StateContextProvider = ({children})=> {
                 const getTokenHolderData = await TOKEN_CONTRACT.getTokenHolderData(
                     account
                 );
+                const currentHolder = {
+                    tokenId: getTokenHolderData[0].toNumber(),
+                    from: getTokenHolderData[1],
+                    to: getTokenHolderData[2],
+                    totalToken: ethers.utils.formatEther(getTokenHolderData[3].toString()),
+                    tokenHolder: getTokenHolderData[4]
+                };
+                setCurrentHolder(currentHolder);
             }
+            //TOKEN SALE CONTRACT
+            const TOKEN_SALE_CONTRACT = await connectingTOKEN_SALE_CONTRACT();
+            const tokenPrice = await TOKEN_SALE_CONTRACT.tokenPrice();
+            const tokenSold = await TOKEN_SALE_CONTRACT.tokensSold();
+            const tokenSaleBalance = await TOKEN_CONTRACT.balanceOf(
+            "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+            );
+            const tokenSale = {
+                tokenPrice: ethers.utils.formatEther(tokenPrice.toString()),
+                tokenSold: tokenSold.toNumber(),
+                tokenSaleBalance: ethers.utils.formatEther(tokenSaleBalance.toString())
+            };
 
-            const currentHolder = {
-                tokenId: getTokenHolderData[0].toNumber(),
-                from: getTokenHolderdata[1],
-                to: getTokenHolderdata[1],
-                totalToken: getTokenHolderdata[1],
-                from: getTokenHolderdata[1]
-            }
-
+            setTokenSale(tokenSale);
+            console.log(tokenSale);
+            console.log(currentHolder);
+            console.log(nativeToken);*/
         } catch (error) {
             console.log(error);
         }
-    }
+    };
     
     useEffect(()=> {
         fetchInitialData();
     }, []);
 
+    //BUY TOKEN
+    const buyToken = async (nToken) => {
+        try {
+            const amount = ethers.utils.parseUnits(nToken.toString(), "ether");
+            const contract = await connectingTOKEN_SALE_CONTRACT();
+
+            const buying = await contract.buyToken(nToken, {
+                value: amount.toString(),
+            });
+
+            await buying.wait();
+            console.log(buying);
+            window.location.reload();
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    //NATIVE TOKEN TRANSFER
+    const transferNativeToken = async()=> {
+        try {
+            const TOKEN_SALE_ADDRESS = "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
+            const TOKEN_AMOUNT = 500;
+            const tokens = TOKEN_AMOUNT.toString();
+            const transferAmount = ethers.utils.parseEther(tokens);
+            
+            const contract = await connectingTOKENCONTRACT();
+            const transaction = await contract.transfer(
+                TOKEN_SALE_ADDRESS,
+                transferAmount
+            );
+
+            console.log(contract);
+            await transaction.wait();
+            window.location.reload();
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
-        <StateContext.Provider value={{ TOKEN_ICO }}>
+        <StateContext.Provider 
+        value={{ 
+        transferNativeToken, 
+        buyToken,
+        connectWallet,
+        setAddress,
+        TOKEN_ICO , 
+        currentHolder, 
+        tokenSale, 
+        tokenHolders, 
+        nativeToken, 
+        balance, 
+        address}}>
             {children}
         </StateContext.Provider>
     ); 

@@ -5,7 +5,7 @@ import {
     TOKEN_ADDRESS,
     TOKEN_ABI,
     TOKEN_SALE_ADDRESS,
-    TOKEN_SALE_ABI
+    TOKEN_SALE_ABI,
 } from "../Context/constants";
 
 export const CheckIfWalletConnected = async() => {
@@ -26,7 +26,6 @@ export const CheckIfWalletConnected = async() => {
 
 export const connectWallet = async() => {
     try {
-        //if there is metamask/wallet injected
         if(!window.ethereum) return console.log("Install Metamask");
 
         const accounts = await window.ethereum.request({
@@ -84,7 +83,7 @@ export const connectingTOKEN_SALE_CONTRACT = async () => {
         const connection = await web3modal.connect();
         const provider = new ethers.providers.Web3Provider(connection);
         const signer = provider.getSigner();
-        const contract = fetchTokenContract(signer);
+        const contract = fetchToken_SALE_Contract(signer);
         return contract;
 
     } catch (error) {

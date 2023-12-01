@@ -1,8 +1,3 @@
-/*   "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
-    "hardhat": "^2.12.0"
-  } */
-
   const hre = require("hardhat");
 
   const tokens = (nToken) => {
@@ -23,7 +18,7 @@
     console.log(`TheBlockchainCoders: ${theBlockchainCoders.address}`);
 
     //TOKEN SALE CONTRACT
-    const _tokenPrice = tokens(1);
+    const _tokenPrice = tokens(1); //token price is 1 ether
 
     const TokenSale = await hre.ethers.getContractFactory("TokenSale");
     const tokenSale = await TokenSale.deploy(

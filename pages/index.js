@@ -5,16 +5,13 @@ import {useStateContext} from '../Context/index'
 
 
 const index = () => {
-  const { TOKEN_ICO } = useStateContext();
+  const { TOKEN_ICO , transferNativeToken} = useStateContext();
 
-  const transferNativeToken = () => {
-    // Define the logic for transferring the token here
-  };
 
   return (<div>
     
     <h1>{TOKEN_ICO}</h1>
-    <button onClick={transferNativeToken}>TRANSFER</button>
+    <button onClick={() => transferNativeToken()}>TRANSFER</button>
   </div>
   );
 };

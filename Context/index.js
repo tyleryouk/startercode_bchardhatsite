@@ -30,13 +30,14 @@ export const StateContextProvider = ({ children })=> {
             const account = await CheckIfWalletConnected();
             //GET USER BALANCE
             const balance = await getBalance();
-            setBalance(ethers.utils.formatEther(balance.toString()));
+            //setBalance("24000000");
+            //setBalance(ethers.utils.formatEther(balance.toString()));
             setAddress(account);
             
             //TOKEN CONTRACT
             const TOKEN_CONTRACT = await connectingTOKENCONTRACT();
 
-            //ERROR WITH balanceOf(account)
+            //ERROR WITH balanceOf(account), balance remains 0
             let tokenBalance;
             if(account){
                 tokenBalance = await TOKEN_CONTRACT.balanceOf(account);
@@ -64,12 +65,12 @@ export const StateContextProvider = ({ children })=> {
                 tokenHolders: tokenHolders.toNumber(),
             };
             setNativeToken(nativeToken);
-            console.log(nativeToken);
-            /*
+
             //GETTING TOKEN HOLDERS
             const getTokenHolder = await TOKEN_CONTRACT.getTokenHolder();
             setTokenHolders(getTokenHolder);
-
+            
+            
             //GETTING TOKEN HOLDER DATA
             if(account){
                 const getTokenHolderData = await TOKEN_CONTRACT.getTokenHolderData(
@@ -84,12 +85,14 @@ export const StateContextProvider = ({ children })=> {
                 };
                 setCurrentHolder(currentHolder);
             }
+
+            
             //TOKEN SALE CONTRACT
             const TOKEN_SALE_CONTRACT = await connectingTOKEN_SALE_CONTRACT();
             const tokenPrice = await TOKEN_SALE_CONTRACT.tokenPrice();
             const tokenSold = await TOKEN_SALE_CONTRACT.tokensSold();
             const tokenSaleBalance = await TOKEN_CONTRACT.balanceOf(
-            "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+                "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
             );
             const tokenSale = {
                 tokenPrice: ethers.utils.formatEther(tokenPrice.toString()),
@@ -98,9 +101,10 @@ export const StateContextProvider = ({ children })=> {
             };
 
             setTokenSale(tokenSale);
+
             console.log(tokenSale);
             console.log(currentHolder);
-            console.log(nativeToken);*/
+            console.log(nativeToken);
         } catch (error) {
             console.log(error);
         }
@@ -131,7 +135,7 @@ export const StateContextProvider = ({ children })=> {
     //NATIVE TOKEN TRANSFER
     const transferNativeToken = async()=> {
         try {
-            const TOKEN_SALE_ADDRESS = "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
+            const TOKEN_SALE_ADDRESS = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
             const TOKEN_AMOUNT = 500;
             const tokens = TOKEN_AMOUNT.toString();
             const transferAmount = ethers.utils.parseEther(tokens);
@@ -163,7 +167,9 @@ export const StateContextProvider = ({ children })=> {
         tokenHolders, 
         nativeToken, 
         balance, 
-        address}}>
+        address
+        }}
+    >
             {children}
         </StateContext.Provider>
     ); 
